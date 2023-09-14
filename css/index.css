@@ -1,0 +1,316 @@
+/* Initialising and importing */
+:root {
+  --clr-dark-blue: #1b2229;
+  --clr-bright-blue: rgb(41, 155, 221);
+  --clr-bright-blue-2: rgb(65, 168, 236);
+}
+@font-face {
+  font-family: roboto;
+  src: url(../assets/fonts/Roboto-Regular.ttf);
+}
+@font-face {
+  font-family: romantic;
+  src: url(../assets/fonts/Romantic.ttf);
+}
+@font-face {
+  font-family: winter;
+  src: url(../assets/fonts/Winter.ttf);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: roboto;
+}
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+html::-webkit-scrollbar {
+  width: 1.3rem;
+}
+html::-webkit-scrollbar-track {
+  background: blanchedalmond;
+}
+html::-webkit-scrollbar-thumb {
+  background: var(--clr-bright-blue);
+}
+body {
+  background: var(--clr-dark-blue);
+}
+
+/* Header and navbar */
+header {
+  width: 100%;
+  background-color: var(--clr-dark-blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 2.5rem 7%;
+}
+header .logo {
+  font-size: 2rem;
+  color: var(--clr-bright-blue);
+  font-family: romantic;
+}
+header .navbar ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+}
+header .navbar ul li {
+  margin-left: 2.5rem;
+}
+header .navbar ul li a {
+  color: var(--clr-bright-blue-2);
+  font-size: 2rem;
+}
+header .navbar ul li a:hover {
+  color: rgb(191, 213, 241);
+  border-bottom: 0.2rem solid rgb(191, 213, 241);
+  padding: 0.7rem 0;
+}
+#menu {
+  font-size: 3rem;
+  color: var(--clr-bright-blue-2);
+  cursor: pointer;
+  display: none;
+}
+/* Section home */
+.home {
+  min-height: 100vh;
+  padding: 0 7%;
+  padding-top: 9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.home .image {
+  flex: 1 1 40rem;
+}
+.home .image img {
+  width: 80%;
+}
+.home .content {
+  flex: 1 1 40rem;
+}
+.home h3 {
+  color: #72d3f0;
+  font-size: 8rem;
+  font-family: romantic;
+}
+.home p {
+  color: rgb(218, 226, 228);
+  font-size: 2rem;
+  padding: 1rem 0;
+  font-family: roboto;
+}
+.home .content .btn {
+  display: inline-block;
+  margin-top: 2rem;
+  margin-left: 3rem;
+  font-size: 20px;
+  margin-bottom: 3rem;
+  padding: 1rem 4rem;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+.btn-1 {
+  background: #f075f0;
+  color: rgb(29, 27, 27);
+  box-shadow: 0.5px 1px 2px 0 #c9934c;
+}
+.btn-2 {
+  background: #d0f044;
+  color: rgb(32, 32, 32);
+  box-shadow: 0.5px 1px 2px 0;
+}
+/* section: about */
+.card {
+  min-height: 70vh;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  margin-top: 20px;
+}
+.container .cards {
+  position: relative;
+  padding: 2rem;
+  width: 500px;
+  height: 300px;
+  margin-top: 100px;
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background: linear-gradient(45deg, #e243d5, #f0bee7);
+  transition: 0.5s;
+  text-align: center;
+}
+.container .cards2 {
+  position: relative;
+  padding: 2rem;
+  padding-top: 10px;
+  width: 500px;
+  height: 300px;
+  margin-top: 100px;
+  margin-left: 15px;
+  margin-right: 15px;
+  transition: 0.5s;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background: linear-gradient(45deg, #d4c819, #e6e477);
+  text-align: center;
+}
+.container .cards img,
+.container .cards2 img {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 350px;
+  transition: 0.5s;
+}
+.container .cards:hover img,
+.container .cards2:hover img {
+  left: 75%;
+  height: 400px;
+}
+.container .cards .content,
+.container .cards2 .content {
+  position: relative;
+  width: 50%;
+  left: 0;
+  padding: 20px 20px 20px 40px;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.5s;
+}
+.container .cards:hover .content,
+.container .cards2:hover .content {
+  opacity: 1;
+  visibility: visible;
+}
+.container .cards .content h2,
+.container .cards2 .content h2 {
+  color: rgb(255, 255, 253);
+  text-transform: uppercase;
+  font-size: 3em;
+  line-height: 1em;
+}
+.container .cards .content p,
+.container .cards2 .content p {
+  font-size: 13px;
+}
+.btn-3 {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 10px;
+  border-radius: 2px;
+  background: #f075f0;
+  color: rgb(255, 255, 255);
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+}
+/* medium screens */
+@media (max-width: 930px) {
+  .home .content,
+  .home .image {
+    text-align: center;
+  }
+}
+/* small screens */
+@media (max-width: 768px) {
+  #menu {
+    display: block;
+  }
+  header .navbar {
+    position: fixed;
+    top: 8rem;
+    right: -120%;
+    height: 100%;
+    width: 50%;
+    background: #3e4a57;
+  }
+
+  header .navbar ul {
+    flex-flow: column;
+    padding: 2rem;
+  }
+
+  header .navbar ul li {
+    text-align: center;
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  header .navbar ul li a {
+    display: block;
+    padding: 1rem;
+    color: var(--clr-bright-blue-2);
+  }
+
+  header .navbar ul li a:hover {
+    padding: 1rem;
+
+    color: rgb(141, 193, 228);
+    border-bottom: 0.2rem solid rgb(191, 213, 241);
+  }
+
+  header .navbar.nav-toggle {
+    right: 0;
+    transition: 0.5s;
+  }
+
+  .home .content .home .image {
+    text-align: center;
+  }
+  .container .cards,
+  .container .cards2 {
+    width: auto;
+    max-width: 600px;
+    align-items: flex-start;
+  }
+  .container .cards:hover,
+  .container .cards2:hover {
+    height: 550px;
+  }
+  .container .cards:hover img,
+  .container .cards2:hover img {
+    left: 50%;
+    height: 300px;
+    transition: 0.5s;
+  }
+  .container .cards .content,
+  .container .cards2 .content {
+    width: 100%;
+    left: 0;
+    padding: 40px;
+  }
+  .container .cards .content,
+  .container .cards .content {
+    padding: 30px;
+  }
+}
+.container .cards:hover img,
+.container .cards2:hover img {
+  height: 300px;
+}

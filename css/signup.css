@@ -1,0 +1,243 @@
+body {font-family: Arial, Helvetica, sans-serif;}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+div::-webkit-scrollbar{
+    width:1.3rem;
+}
+div::-webkit-scrollbar-track{
+background: blanchedalmond;
+}
+div::-webkit-scrollbar-thumb{
+    background: rgb(41, 155, 221);
+}
+
+/* Full-width input fields */
+input[type=text], input[type=password] {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: 0;
+  background: #1b2229;
+  
+  
+}
+::placeholder{
+  color: white;
+}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=password]:focus,
+input[type=text]:valid, input[type=password]:valid {
+  
+  outline: none;
+  border-bottom: 2px solid #f075f0;
+  color: #f075f0;
+}
+
+/* Set a style for all buttons */
+button {
+  background-color: #dd52ba;
+  color: rgb(255, 255, 255);
+  padding: 14px 20px;
+  margin: 8px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  border: 0;
+  
+}
+
+button:hover {
+  opacity:1;
+}
+.clearfix{
+  margin-top: 10px;
+  text-align: center;
+  display: flex;
+}
+
+/* Extra styles for the cancel button */
+
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .signupbtn {
+  background-color: #d639d6 ;
+  color: rgb(255, 255, 255);
+  width: 30%;
+  display: block;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cancelbtn1 {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+  }
+/* Center the image and position the close button */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+  }
+  
+img.avatar {
+    width: 40%;
+    border-radius: 50%;
+  }
+  
+
+/* Add padding to container elements */
+.container {
+  padding: 16px;
+}
+.container h1, p, b{
+  color: #f075f0 ;
+}
+.container h1{
+  color: #f31ff3 ;
+  margin-bottom: 10px;
+}
+.container p{
+   margin-bottom: 10px ;
+}
+.container .si{
+    margin: 15px;
+}
+span.psw1 {
+    float: right;
+    padding-top: 16px;
+  }
+/* The Modal (background) */
+.modal {
+  
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background: #1b2229;
+  padding-top: 50px;
+ 
+}
+
+/* Modal Content/Box */
+.modal-content {
+  position: relative;
+  min-height: 100vh;
+  padding: 0 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction:row;
+  
+}
+.modal-content .container{
+  width: 100%;
+  padding: 40px;
+  
+  
+  margin-top: 20px;
+}
+.modal-content .img12{
+  width: 50%;
+}
+.img12 .imgbox{
+  position: relative;
+  padding: 2rem;
+  padding-top: 10px;
+  width: 350px;
+  height: 280px;
+  margin-top: 100px;
+  margin-left: 25px;
+  margin-right: 15px;
+  align-items: center;
+  background-color: #e899dc;
+  background-image: linear-gradient(135deg,#e899dc 0%,#d387ab 74%);
+}
+.imgbox img{
+  
+  position: absolute;
+  bottom:0;
+  height: 400px;
+  left: 20%;
+  
+}
+
+/* Style the horizontal ruler */
+hr {
+  border: 1px solid #e655e6 ;
+  margin-bottom: 25px;
+}
+ 
+/* The Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f075f0 ;
+}
+
+.close:hover,
+.close:focus {
+  color: #d0f044;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+  }
+  
+  @-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)} 
+    to {-webkit-transform: scale(1)}
+  }
+    
+  @keyframes animatezoom {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
+  }
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 768px){
+  .img12 {
+    display: none;
+  }
+  .cancelbtn, .signupbtn {
+    background-color: #d639d6 ;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    display: block;
+    margin-top: 10px;
+    margin-left: 10px;
+ 
+  }
+}
+@media screen and (max-width: 300px) {
+    span.psw {
+        display: block;
+        float: none;
+     }
+  .cancelbtn, .signupbtn {
+     width: 100%;
+  }
+  
+}

@@ -1,0 +1,144 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.team{
+  min-height: 100vh;
+}
+.team h1,hr{
+  text-align: center;
+}
+.team h1{
+  font-size: 40px;
+  color: wheat;
+  margin-top: 30px;
+}
+.team hr{
+  width: 200px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.a_row{
+   display: flex;
+   flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  margin-top: 50px;
+}
+.a_row .a_card1{
+  position: relative;
+  padding: 2rem;
+  width: 350px;
+  height: 500px;
+  margin-top: 150px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+ 
+  align-items: center;
+  background: linear-gradient(45deg,#d4c819,#e6e477);
+  transition: 0.5s;
+  text-align: center;
+}
+.a_row .a_card2{
+  position: relative;
+  padding: 2rem;
+  width: 350px;
+  height: 500px;
+  margin-top: 150px;
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: linear-gradient(45deg,#05b0f3e7,#55c3ee);
+  transition: 0.5s;
+  text-align: center;
+}
+
+
+.a_row .a_card3{
+  position: relative;
+  padding: 2rem;
+  width: 350px;
+  height: 500px;
+  margin-top: 150px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: linear-gradient(45deg,#e243d5,#f0bee7);
+  
+  text-align: center;
+}
+.a_row .a_card1 img,
+.a_row .a_card2 img,
+.a_row .a_card3 img{
+  position: absolute;
+  bottom: 55%;
+  left: 50%;
+  transform: translateX(-50%);
+height: 300px;
+transition: 0.5s;
+}
+
+.a_row .a_card1 .a_container{
+position: relative;
+width: 100%;
+top: 200px;
+padding: 10px 20px 20px 20px;
+
+
+}
+.a_row .a_card2 .a_container{
+  position: relative;
+  width: 100%;
+  top: 200px;
+  padding: 10px 20px 20px 20px;
+  
+  
+}
+.a_row .a_card3 .a_container{
+      position: relative;
+      width: 100%;
+      top: 200px;
+      padding: 10px 20px 20px 20px;
+      
+}
+
+.a_p {
+  font-family: roboto;
+  color: rgb(41, 38, 38);
+  font-size: 15px;
+  text-align: center;
+  margin: 0;
+  margin-top: 5px;
+  padding: 15px;
+  padding-top: 10px;
+  
+}
+.a_title{
+  color: rgb(245, 233, 233);
+  font-weight: bolder;
+  text-align: center;
+  font-size: 30px;
+  margin-top: 10px;
+  
+}
+
+@media (max-width:768px){
+  .team h1{
+    margin-top: 90px;
+  }
+}

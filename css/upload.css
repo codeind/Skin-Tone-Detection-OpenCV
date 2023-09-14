@@ -1,0 +1,152 @@
+:root {
+  --clr-dark-blue: #1b2229;
+  --clr-bright-blue: rgb(65, 168, 236);
+  --clr-bright-blue-2 : rgb(41, 155, 221);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/*Main Upload Part*/
+body {
+  min-height: 100vh;
+  background: var(--clr-dark-blue);
+}
+.container {
+  background: var(--clr-dark-blue);
+  padding: 2rem 0;
+  margin-top: 14rem;
+}
+.drag-area {
+  border: 2px dashed white;
+  min-height: 65%;
+  width: 85%;
+  background: linear-gradient(
+    to top,
+    rgba(27, 34, 41, 1) 0%,
+    rgba(47, 64, 80, 1) 100%
+  );
+  padding: 2rem 1rem;
+  margin-inline: auto;
+  border-radius: 5px;
+  text-align: center;
+}
+.active {
+  border: 2px solid white;
+  width: 85%;
+}
+.drag-area .icon {
+  font-size: 100px;
+  color: white;
+}
+
+.header {
+  width: 100%;
+  font-size: 3rem;
+  font-weight: 500;
+  padding: 8% 10% 5%;
+  color: white;
+  text-align: center;
+}
+
+.drag-area > p {
+  font-size: 2rem;
+  color: white;
+}
+.drag-area .btn-upload {
+  padding: 10px 25px;
+  font-size: 2rem;
+  margin-block: 1rem;
+  background-color: var(--clr-bright-blue-2);
+  color: var(--clr-dark-blue);
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.btn-upload:hover {
+  background-color: var(--clr-bright-blue);
+  box-shadow: 0px 0px 5px 0px #617d9b;
+}
+/* Result Section */
+.result-container {
+  width: 85%;
+  background: linear-gradient(rgba(27, 34, 41, 1) 0%, rgba(47, 64, 80, 1) 100%);
+  border: 1px solid #ffffff83;
+  padding: 2rem;
+  margin-block: 2rem;
+  margin-inline: auto;
+}
+
+.result-container .header {
+  padding-top: 2%;
+  color: #ffffffe3;
+}
+.img-holder {
+  width: 50%;
+  margin: auto;
+  border: 1px solid #617d9b;
+}
+.img-holder img {
+  width: 100%;
+}
+.result-container h1 {
+  color: #ffffffb5;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-top: 2rem;
+  text-align: center;
+}
+#result {
+  text-align: center;
+  color: white;
+  font-size: 2rem;
+  padding: 1rem;
+}
+.result-color {
+  width: 50%;
+  height: 3rem;
+  padding: 1rem 15px;
+  margin: auto;
+  background: #000;
+  border-radius: 5px;
+}
+.btnUpload{
+    display: inline-block;
+    margin-top: 1rem;
+    margin-left: 3rem;
+    font-size: 20px;
+    margin-bottom: 1rem;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    background:#f075f0 ;
+    border:none;
+    color:white;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    box-shadow: .5px 1px 2px 0 #c9934c;
+}
+.btnUpload:hover{
+  color: black;
+    background-color: whitesmoke;
+}
+
+/* Bigger screens */
+@media (min-width: 1024px) {
+  .container {
+    margin-top: 11rem;
+  }
+  .drag-area {
+    padding: 6rem 1rem;
+    margin-inline: min(25rem, 15vw);
+  }
+  .drag-area .header {
+    padding: 4% 10% 2%;
+  }
+  .result-container {
+    width: 70%;
+  }
+}

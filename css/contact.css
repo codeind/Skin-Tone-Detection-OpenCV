@@ -1,0 +1,127 @@
+@font-face {
+  font-family: roboto;
+  src: url(../fonts/Roboto-Regular.ttf);
+}
+
+
+
+* {
+    box-sizing: border-box;
+    
+  }
+  body{
+      background-color: #1b2229;
+  }
+  .containr h1,p,b{
+      
+      font-family: roboto;
+      font-weight: normal;
+    
+      color: wheat;
+  }
+  .containr h1{
+    font-size: 40px;
+    margin-top: 50px;
+    font-family: roboto;
+    margin-bottom: 10px;
+  }
+  .containr p{
+    font-size: 20px;
+    font-family: roboto;
+    margin-top: 10px;
+  }
+  .containr b{
+    font-size: 15px;
+    
+    
+  }
+   .containr hr{
+    border: 1px solid wheat;
+    width: 250px;
+    margin: auto;
+  }
+  ::placeholder{
+    color: white;
+  }
+  /* Style inputs */
+  input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    background-color: #30353a;
+    border: 1px solid wheat;
+    border-radius: 5px;
+  }
+  input[type=text]:focus, textarea:focus,
+  input[type=text]:valid, textarea:valid {
+    
+    outline: none;
+    
+    color: rgb(185, 182, 129);
+  }
+  input[type=submit] {
+    background-color: #d0f044;
+    color: rgb(0, 0, 0);
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: rgb(41, 155, 221);
+   
+  }
+  
+  /* Style the container/contact section */
+  .containr {
+    border-radius: 5px;
+    background-color: #1b2229;
+    padding: 10px;
+  }
+  .containr .row{
+    display: flex;
+    flex-direction: row;
+    margin-top: 50px;
+  }
+  .containr .row .map{
+    margin-left: 100px;
+    margin-top: 50px;
+  }
+  /* Create two columns that float next to eachother */
+  .containr .row .column {
+    float: left;
+    width: 50%;
+    margin-top: 6px;
+    padding: 20px;
+    margin-left: 100px;
+  }
+  
+  /* Clear floats after the columns */
+  .containr .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+   
+    @media screen and (max-width: 858px){
+      .containr .column, input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+      }
+      .containr .row{
+        flex-direction: column;
+        
+      }
+      .containr .row .map{
+       margin: auto;
+      }
+      .containr .row .column{
+        margin: auto;
+      }
+    }
+  
+  

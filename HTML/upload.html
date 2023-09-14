@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/tonescan.css" />
+    <link rel="stylesheet" href="../css/upload.css" />
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <title>Upload Image</title>
+  </head>
+  <body>
+    <!--Navbar-->
+    <header>
+      <a href="tonescan.html" class="logo">ToneScan</a>
+      <div id="menu" class="fas fa-bars"></div>
+      <nav class="navbar">
+          <ul>
+              <!-- <li><a href="tonescan.html/#home">Home</a></li>
+              <li><a href="tonescan.html/#about">About</a></li>
+              <li><a href="tonescan.html/#contactUs">Contact Us</a></li> -->
+              <!-- <li><a href="./signin.html">Login</a></li> -->
+              <!-- <li><a href="#" id="test">Test Now</a></li> -->
+              <button class="btnUpload"><a href="tonescan.html"> Home Page</a></button>
+          </ul>
+      </nav>
+    </header>
+        
+    <!--Main Upload-->
+    <div class="container">
+      <div class="drag-area">
+        <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h1 class="header">Drag and drop file to upload</h1>
+        <p>OR</p>
+        <button class="btn-upload">Browse File</button>
+        <input type="file" hidden />
+      </div>
+    </div>
+    <!--Result-->
+    <div class="result-container" id="resultContainer">
+      <h1 class="header">Your Image</h1>
+      <div class="img-holder">
+        <!-- Placeholder class to display uploaded image -->
+      </div>
+
+      <h1>Our assessment:</h1>
+      <p id="result"></p>
+      <div class="result-color"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="../js/index.js"></script>
+    <script src="../js/upload.js"></script>
+  </body>
+</html>
