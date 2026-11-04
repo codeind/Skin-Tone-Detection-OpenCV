@@ -1,6 +1,6 @@
 """Skin tone estimation from a photo.
 
-Pipeline (the same steps run in the browser demo, web/skintone.js):
+Pipeline (the same steps run in the browser version, browser_backend/skintone.js):
 
 1. Region   - optionally crop to the face (OpenCV Haar cascade) so walls and clothes are ignored.
 2. Mask     - smooth the image with a 3x3 average, keep pixels whose colour falls in skin ranges in

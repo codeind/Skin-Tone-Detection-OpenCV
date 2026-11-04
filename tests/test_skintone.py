@@ -102,7 +102,7 @@ def test_unreadable_bytes_raise():
 
 
 def test_parity_fixture_is_current():
-    """web/skintone.js is checked against this file (tests/test_parity.mjs)."""
+    """browser_backend/skintone.js is checked against this file (tests/test_parity.mjs)."""
     cases = json.loads(FIXTURES.read_text())
     for case in cases:
         img = np.array(case["pixels"], dtype=float).reshape(case["height"], case["width"], 3)

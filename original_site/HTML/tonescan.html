@@ -85,8 +85,8 @@
             <div class="cards2">
                 <div class="content">
                     <h2>How we do it?</h2>
-                    <p>Machine Learning is used to detect the colour of the skin.It scans the image and according to the
-                        rgb value it gives the result of the skin colour.</p>
+                    <p>The back end finds the face and the skin pixels with OpenCV, groups their colours with k-means
+                        and measures the skin colour with the Individual Typology Angle (ITA) to give the skin tone.</p>
                     <!-- <a href="#" class="btn btn-3">Read more</a> -->
                 </div>
                 <img src="../img/3.png" alt="">
@@ -180,7 +180,7 @@
            <p><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7777.958435161421!2d77.63058973488774!3d12.909057199999992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae159870935d2b%3A0xc3bcf5699d61b87c!2sVerzeo!5e0!3m2!1sen!2sin!4v1621165349387!5m2!1sen!2sin" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe></p>
           </div>
           <div class="column">
-            <form action="/action_page.php">
+            <form action="#" onsubmit="event.preventDefault(); this.querySelector('.mockup-note').hidden = false;">
               <label for="fname"><b>First Name</b></label>
               <input type="text" id="fname" name="firstname" placeholder="Your name.." required>
               <label for="email"><b>Email id</b></label>
@@ -189,6 +189,7 @@
               <label for="subject"><b>Subject</b></label>
               <textarea id="subject" name="subject" placeholder="Write something.." style="height:170px" required></textarea>
               <input type="submit" value="Submit">
+              <p class="mockup-note" hidden style="color:#d4c819;margin-top:8px">This contact form is a design mockup; messages are not sent.</p>
             </form>
           </div>
         </div>

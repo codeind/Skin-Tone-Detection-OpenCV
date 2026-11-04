@@ -1,6 +1,6 @@
 /* Skin tone estimation: JavaScript port of skintone/core.py (analyze_rgb).
  *
- * The live demo runs this in a Web Worker in place of the Django API, because GitHub Pages
+ * The live site runs this in a Web Worker in place of the Django API, because GitHub Pages
  * can only serve static files. tests/test_parity.mjs checks that it returns the same result
  * as the Python version for the cases in tests/fixtures/parity.json.
  *

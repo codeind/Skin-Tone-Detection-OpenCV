@@ -1,10 +1,10 @@
-// Checks that web/skintone.js gives the same result as the Python pipeline.
+// Checks that browser_backend/skintone.js gives the same result as the Python pipeline.
 // Run: node tests/test_parity.mjs
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const SkinTone = require("../web/skintone.js");
+const SkinTone = require("../browser_backend/skintone.js");
 const cases = JSON.parse(readFileSync(new URL("./fixtures/parity.json", import.meta.url)));
 
 let failed = 0;

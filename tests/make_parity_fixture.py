@@ -1,6 +1,6 @@
 """Write tests/fixtures/parity.json: small synthetic images and the Python result for each.
 
-tests/test_parity.mjs runs web/skintone.js on the same pixels and compares.
+tests/test_parity.mjs runs browser_backend/skintone.js on the same pixels and compares.
 
     python tests/make_parity_fixture.py
 """

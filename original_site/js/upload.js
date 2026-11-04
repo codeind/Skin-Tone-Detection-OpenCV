@@ -5,7 +5,7 @@ var baseURL;                    //Variable used to store base64 encoding of the 
 
 // API logic
 // When the page is opened locally it calls the Django API. On GitHub Pages (no Python server) it uses the
-// same pipeline running in the browser (../../web/backend.worker.js), which returns the same JSON fields.
+// same pipeline running in the browser (../../browser_backend/backend.worker.js), which returns the same JSON fields.
 const LOCAL = ["localhost", "127.0.0.1", ""].includes(location.hostname);
 const APIurl = `http://127.0.0.1:8000/image-process`;
 let worker = null;
@@ -29,7 +29,7 @@ const APICall = function (data, callback) {
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     const rgba = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    if (!worker) worker = new Worker("../../web/backend.worker.js");
+    if (!worker) worker = new Worker("../../browser_backend/backend.worker.js");
     worker.onmessage = (e) => callback(e.data.ok ? e.data.result : { result: e.data.error });
     worker.postMessage({ id: 1, width: canvas.width, height: canvas.height, rgba });
   };
