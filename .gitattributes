@@ -1,0 +1,2 @@
+*.ipynb linguist-documentation
+tests/fixtures/*.json linguist-generated
