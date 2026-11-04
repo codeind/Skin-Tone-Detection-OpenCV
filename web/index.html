@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ToneScan · Skin Tone Detection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f4f5f7; --panel: #fff; --line: #e1e4e8; --ink: #15191e; --ink-2: #4f5761; --ink-3: #7b838d;
+  --brand: #1b2229; --accent: #299bdd; --accent-2: #f075f0; --ok: #2f7d4f; --warn: #b26b00;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { color-scheme: light; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+a { color: var(--accent); }
+.top { background: var(--brand); color: #fff; }
+.top .in { max-width: 1180px; margin: 0 auto; padding: 14px max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.logo { font: 800 22px/1 var(--font-display); letter-spacing: .01em; color: #fff; text-decoration: none; }
+.logo span { color: var(--accent); }
+.top nav { margin-left: auto; display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; }
+.top nav a { color: #cfd6de; text-decoration: none; }
+.top nav a:hover { color: #fff; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 22px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 18px; }
+h1 { font: 800 clamp(24px, 4vw, 34px)/1.1 var(--font-display); margin: 0; }
+.lede { color: var(--ink-2); max-width: 70ch; margin: 6px 0 0; }
+
+/* architecture strip */
+.flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.flow .node { padding: 12px 14px; display: grid; gap: 2px; position: relative; border-right: 1px solid var(--line); }
+.flow .node:last-child { border-right: 0; }
+.flow .node b { font: 700 14px/1.2 var(--font-display); }
+.flow .node span { font-size: 12.5px; color: var(--ink-2); }
+.flow .node .k { font: 500 11px/1 var(--font-data); color: var(--ink-3); }
+.flow .node.live { background: #eef7fd; }
+@media (max-width: 860px) { .flow { grid-template-columns: minmax(0, 1fr); } .flow .node { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+.app { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-width: 0; display: grid; gap: 12px; align-content: start; }
+.panel h2 { font: 700 16px/1.3 var(--font-display); margin: 0; display: flex; align-items: center; gap: 8px; }
+.panel h2 .n { width: 22px; height: 22px; border-radius: 50%; background: var(--brand); color: #fff; font: 700 12px/22px var(--font-body); text-align: center; flex: none; }
+.sub { font-size: 13.5px; color: var(--ink-2); margin: -6px 0 0; }
+
+.drop { border: 2px dashed #b8c3cf; border-radius: 10px; min-height: 260px; display: grid; place-items: center; text-align: center; padding: 18px; background: #fafbfc; position: relative; }
+.drop.over { border-color: var(--accent); background: #eef7fd; }
+.drop .hint { display: grid; gap: 8px; justify-items: center; color: var(--ink-2); }
+.drop .hint svg { width: 44px; height: 44px; color: var(--accent); }
+.stage { position: relative; width: 100%; display: none; }
+.stage.on { display: block; }
+.stage canvas { width: 100%; height: auto; display: block; border-radius: 6px; }
+#overlay { position: absolute; inset: 0; cursor: crosshair; touch-action: none; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 7px; padding: 8px 14px; font: 600 14px var(--font-body); cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.samples { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-2); }
+.samples button { border: 1px solid var(--line); border-radius: 8px; padding: 0; width: 52px; height: 52px; overflow: hidden; cursor: pointer; background: #fff; }
+.samples button canvas { width: 100%; height: 100%; display: block; }
+.samples button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+video { width: 100%; border-radius: 6px; background: #000; display: none; }
+video.on { display: block; }
+.privacy { font-size: 13px; color: var(--ink-2); display: flex; gap: 6px; align-items: flex-start; }
+
+/* result */
+.result { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; align-items: center; }
+.swatch { width: 110px; height: 110px; border-radius: 12px; border: 1px solid rgba(0,0,0,.08); background: repeating-linear-gradient(45deg, #eef0f2, #eef0f2 8px, #f7f8f9 8px, #f7f8f9 16px); }
+.result .label { font: 800 28px/1.1 var(--font-display); }
+.result .meta { font-size: 14px; color: var(--ink-2); display: grid; gap: 2px; }
+.result .meta b { font-family: var(--font-data); font-weight: 500; color: var(--ink); }
+.scale { display: grid; gap: 4px; }
+.scale .bar { position: relative; height: 22px; display: flex; border-radius: 6px; overflow: visible; }
+.scale .bar div { flex: 1; height: 100%; }
+.scale .bar div:first-child { border-radius: 6px 0 0 6px; }
+.scale .bar div:last-child { border-radius: 0 6px 6px 0; }
+.scale .marker { position: absolute; top: -6px; width: 4px; height: 34px; background: var(--ink); border-radius: 2px; transform: translateX(-2px); transition: left .3s; }
+.scale .ticks { display: flex; font-size: 11.5px; color: var(--ink-2); }
+.scale .ticks span { flex: 1; text-align: center; }
+.badge { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; border-radius: 999px; padding: 3px 10px; background: #eef7fd; color: #145b86; font-weight: 600; }
+.badge.api { background: #e9f6ee; color: var(--ok); }
+details.log { border: 1px solid var(--line); border-radius: 8px; }
+details.log summary { cursor: pointer; padding: 8px 12px; font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+details.log pre { margin: 0; padding: 10px 12px; border-top: 1px solid var(--line); font: 12.5px/1.45 var(--font-data); background: #fafbfc; overflow-x: auto; max-height: 300px; }
+.empty { color: var(--ink-3); font-size: 14px; }
+.msg { font-size: 14px; border-radius: 8px; padding: 10px 12px; background: #fff6e5; color: #7a4a00; display: none; }
+.msg.on { display: block; }
+
+/* pipeline */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .steps { grid-template-columns: minmax(0, 1fr); } }
+.step { display: grid; gap: 6px; align-content: start; }
+.step h3 { font: 700 14px/1.3 var(--font-display); margin: 0; }
+.step p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.step canvas { width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line); background: #f0f2f4; }
+.clusters { display: grid; gap: 6px; }
+.cl { display: grid; grid-template-columns: 28px minmax(0, 1fr) 44px; gap: 8px; align-items: center; font-size: 13px; }
+.cl i { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,.08); display: block; }
+.cl .track { height: 8px; background: #edf0f3; border-radius: 4px; overflow: hidden; }
+.cl .track div { height: 100%; background: var(--ink-3); }
+.cl.chosen .track div { background: var(--accent); }
+.cl .pct { text-align: right; font-family: var(--font-data); font-size: 12px; }
+.formula { font: 13px/1.6 var(--font-data); background: #fafbfc; border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+
+/* about */
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 12px/1.2 var(--font-body); text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+code { font: 12.5px var(--font-data); background: #f0f2f4; padding: 1px 5px; border-radius: 4px; }
+.tree { font: 12.5px/1.6 var(--font-data); background: #fafbfc; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; white-space: pre; overflow-x: auto; margin: 0; }
+.foot { font-size: 12.5px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <a class="logo" href="./">Tone<span>Scan</span></a>
+    <nav aria-label="Project">
+      <a href="#how">How it works</a>
+      <a href="#architecture">Architecture</a>
+      <a href="../original_site/HTML/tonescan.html">Original front end</a>
+      <a href="https://github.com/codeind/Skin-Tone-Detection-OpenCV">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h1>Skin tone detection from a photo</h1>
+    <p class="lede">Upload or take a photo. The front end sends it to the image-processing back end, which finds the skin pixels, works out the dominant skin colour and classifies it with the Individual Typology Angle (ITA), a standard skin colour measure. The result comes back as JSON and is shown below.</p>
+  </section>
+
+  <section class="flow" aria-label="Request flow">
+    <div class="node"><span class="k">1 · front end</span><b>Photo</b><span>Upload, drag and drop, or camera</span></div>
+    <div class="node"><span class="k">2 · request</span><b>POST /image-process</b><span>Image sent as base64 JPEG</span></div>
+    <div class="node live" id="flowBackend"><span class="k">3 · back end</span><b id="flowBackendName">Image-processing pipeline</b><span id="flowBackendSub">Running in your browser</span></div>
+    <div class="node"><span class="k">4 · response</span><b>JSON</b><span>Label, ITA, colour, skin coverage</span></div>
+    <div class="node"><span class="k">5 · front end</span><b>Result</b><span>Colour swatch and ITA scale</span></div>
+  </section>
+
+  <section class="app">
+    <div class="panel">
+      <h2><span class="n">1</span>Choose a photo</h2>
+      <p class="sub">A face or a hand in even, natural light works best. Drag on the photo to analyse only part of it.</p>
+      <div class="drop" id="drop">
+        <div class="hint" id="dropHint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          <strong>Drag and drop a photo here</strong>
+          <span>JPEG or PNG</span>
+        </div>
+        <div class="stage" id="stage">
+          <canvas id="photo" aria-label="Selected photo"></canvas>
+          <canvas id="overlay" aria-label="Drag to select the area to analyse"></canvas>
+        </div>
+        <video id="video" playsinline muted aria-label="Camera preview"></video>
+      </div>
+      <div class="actions">
+        <label class="btn primary" for="file">Browse file</label>
+        <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+        <button class="btn" type="button" id="camBtn">Use camera</button>
+        <button class="btn" type="button" id="snapBtn" hidden>Take photo</button>
+        <button class="btn" type="button" id="resetArea" disabled>Whole image</button>
+      </div>
+      <div class="samples" id="samples"><span>Or try an illustration:</span></div>
+      <p class="privacy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span id="privacyText">On this page the back end runs inside your browser, so your photo is never uploaded anywhere.</span></p>
+    </div>
+
+    <div class="panel" aria-live="polite">
+      <h2><span class="n">2</span>Result</h2>
+      <div><span class="badge" id="backendBadge">Back end: in-browser pipeline</span></div>
+      <div class="msg" id="msg"></div>
+      <div class="result">
+        <div class="swatch" id="swatch" role="img" aria-label="Detected skin colour"></div>
+        <div>
+          <div class="label" id="label">Waiting for a photo</div>
+          <div class="meta" id="meta"><span class="empty">The detected skin colour, its ITA value and category will appear here.</span></div>
+        </div>
+      </div>
+      <div class="scale" aria-hidden="true">
+        <div class="bar" id="scaleBar"><div class="marker" id="marker" style="left:50%;display:none"></div></div>
+        <div class="ticks" id="scaleTicks"></div>
+      </div>
+      <details class="log" id="log">
+        <summary>Request and response</summary>
+        <pre id="logText">No request yet.</pre>
+      </details>
+    </div>
+  </section>
+
+  <section class="panel" id="how">
+    <h2>How the back end gets the answer</h2>
+    <p class="sub">The same steps run in the Python package <code>skintone</code> (used by the Django API) and in <code>skintone.js</code> (used on this page).</p>
+    <div class="steps">
+      <div class="step">
+        <h3>1 · Area</h3>
+        <canvas id="cvArea" width="320" height="240"></canvas>
+        <p>The API crops to the face found by OpenCV's Haar cascade. Here, the area you select (or the whole photo) is used.</p>
+      </div>
+      <div class="step">
+        <h3>2 · Skin mask</h3>
+        <canvas id="cvMask" width="320" height="240"></canvas>
+        <p id="maskText">Shown in colour: pixels whose colour falls inside skin ranges in both HSV and YCrCb, after a 3×3 blur and a morphological opening to remove specks.</p>
+      </div>
+      <div class="step">
+        <h3>3 · Dominant colour</h3>
+        <div class="clusters" id="clusters"><p class="empty">k-means (k = 3) groups the skin pixels in CIELAB colour space; the largest group is the skin colour; the others pick up shadows, highlights and skin-coloured clothing or background.</p></div>
+      </div>
+      <div class="step">
+        <h3>4 · ITA and category</h3>
+        <div class="formula" id="formula">ITA = arctan((L* − 50) / b*)</div>
+        <p>Above 55° Very light · 41–55° Light · 28–41° Intermediate · 10–28° Tan · −30–10° Brown · below −30° Dark.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid2" id="architecture">
+    <div class="panel">
+      <h2>Architecture</h2>
+      <pre class="tree">original_site/   front end (HTML, CSS, JavaScript)
+                 upload page sends the photo to the API
+api/             Django + Django REST Framework
+                 POST /image-process -> JSON
+skintone/        Python image-processing package
+                 OpenCV face detection, NumPy pipeline
+web/             this page; skintone.js is the same
+                 pipeline in JavaScript for GitHub Pages
+tests/           pytest, API tests, Python vs JS check</pre>
+      <p class="sub" style="margin:0">Run the real API locally (<code>python api/manage.py runserver</code>) and open this page with <code>?api=http://127.0.0.1:8000/image-process</code> to send photos to Django instead.</p>
+    </div>
+    <div class="panel">
+      <h2>What was fixed in the original ML code</h2>
+      <table>
+        <thead><tr><th>Original</th><th>Now</th></tr></thead>
+        <tbody>
+          <tr><td>Image loaded as RGB but processed as BGR, so the skin mask kept 0% of every reference skin colour</td><td>One conversion path, tested against OpenCV</td></tr>
+          <tr><td>Colour packed into one integer and compared with ranges (typos 255 and 265 for 256), so 6 of 10 reference shades were "fair" and the 2 darkest "Unrecognized"</td><td>ITA from CIELAB with 6 standard categories, correct on all 10 reference shades</td></tr>
+          <tr><td>Crashed when no skin was found</td><td>Returns "No skin detected"</td></tr>
+          <tr><td>Every upload written to the same file on disk</td><td>Decoded in memory</td></tr>
+          <tr><td>No tests</td><td>36 Python tests and a Python vs JavaScript parity check in CI</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="foot">ToneScan estimates the colour of skin in a photo. Lighting, white balance, filters and make-up change the result, and it is not a medical or cosmetic diagnosis tool. Reference colours in the tests: Monk Skin Tone Scale (Google, CC BY 4.0).</p>
+</main>
+
+<script src="skintone.js"></script>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const MAX_SIDE = 640;
+  const params = new URLSearchParams(location.search);
+  const API = params.get("api");                     // e.g. http://127.0.0.1:8000/image-process
+  const CAT_COLOURS = ["#5b3a29", "#8d5a3b", "#c08a5f", "#d9ae85", "#ecd0b0", "#f8e8da"];   // Dark ... Very light
+  const CATS = ["Dark", "Brown", "Tan", "Intermediate", "Light", "Very light"];
+  const BOUNDS = [-90, -30, 10, 28, 41, 55, 90];
+
+  // ---------- ITA scale ----------
+  const bar = $("#scaleBar");
+  CATS.forEach((c, i) => {
+    const d = document.createElement("div");
+    d.style.background = CAT_COLOURS[i];
+    d.style.flex = String(BOUNDS[i + 1] - BOUNDS[i]);
+    d.title = c;
+    bar.insertBefore(d, $("#marker"));
+  });
+  $("#scaleTicks").innerHTML = CATS.map((c, i) => `<span style="flex:${BOUNDS[i + 1] - BOUNDS[i]}">${c}</span>`).join("");
+
+  // ---------- back end ----------
+  let worker = null, reqId = 0;
+  if (API) {
+    $("#backendBadge").textContent = "Back end: Django API";
+    $("#backendBadge").classList.add("api");
+    $("#flowBackendName").textContent = "Django API";
+    $("#flowBackendSub").textContent = API;
+    $("#privacyText").textContent = "Photos are sent to the API at " + API + ".";
+  } else {
+    worker = new Worker("backend.worker.js");
+    $("#flowBackendSub").textContent = "Same pipeline, running in your browser";
+  }
+  const pending = new Map();
+  if (worker) worker.onmessage = (e) => { const p = pending.get(e.data.id); if (p) { pending.delete(e.data.id); p(e.data); } };
+
+  function callWorker(img, region) {
+    const ctx = img.getContext("2d");
+    const { data } = ctx.getImageData(0, 0, img.width, img.height);
+    const id = ++reqId;
+    return new Promise((resolve) => {
+      pending.set(id, resolve);
+      worker.postMessage({ id, width: img.width, height: img.height, rgba: data, region });
+    });
+  }
+
+  async function callApi(img, region) {
+    let c = img;
+    if (region) {
+      c = document.createElement("canvas");
+      c.width = region[2]; c.height = region[3];
+      c.getContext("2d").drawImage(img, region[0], region[1], region[2], region[3], 0, 0, region[2], region[3]);
+    }
+    const b64 = c.toDataURL("image/jpeg", 0.92).split(",")[1];
+    const t0 = performance.now();
+    const res = await fetch(API + (region ? "?face=0" : ""), { method: "POST", headers: { "Content-Type": "text/plain" }, body: b64 });
+    const json = await res.json();
+    return { ok: res.ok, result: json, error: json.error, ms: Math.round(performance.now() - t0), bytes: b64.length };
+  }
+
+  // ---------- image handling ----------
+  const photo = $("#photo"), overlay = $("#overlay");
+  let region = null, drag = null, imgCanvas = null;
+
+  function setImage(source, w, h, name) {
+    const scale = Math.min(1, MAX_SIDE / Math.max(w, h));
+    const c = document.createElement("canvas");
+    c.width = Math.round(w * scale); c.height = Math.round(h * scale);
+    c.getContext("2d").drawImage(source, 0, 0, c.width, c.height);
+    imgCanvas = c;
+    photo.width = overlay.width = c.width; photo.height = overlay.height = c.height;
+    photo.getContext("2d").drawImage(c, 0, 0);
+    $("#stage").classList.add("on"); $("#dropHint").style.display = "none";
+    region = null; drawOverlay(); $("#resetArea").disabled = true;
+    run(name);
+  }
+
+  function loadFile(file) {
+    if (!file || !/^image\//.test(file.type)) return showMsg("Please choose a JPEG or PNG image.");
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => { setImage(im, im.naturalWidth, im.naturalHeight, file.name); URL.revokeObjectURL(url); };
+    im.onerror = () => showMsg("That file could not be read as an image.");
+    im.src = url;
+  }
+
+  $("#file").addEventListener("change", (e) => loadFile(e.target.files[0]));
+  const drop = $("#drop");
+  ["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", (e) => loadFile(e.dataTransfer.files[0]));
+
+  // camera
+  let stream = null;
+  $("#camBtn").addEventListener("click", async () => {
+    if (stream) return stopCam();
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      const v = $("#video"); v.srcObject = stream; await v.play();
+      v.classList.add("on"); $("#stage").classList.remove("on"); $("#dropHint").style.display = "none";
+      $("#snapBtn").hidden = false; $("#camBtn").textContent = "Close camera";
+    } catch (err) { showMsg("The camera could not be opened: " + err.message); stream = null; }
+  });
+  function stopCam() {
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null; $("#video").classList.remove("on"); $("#snapBtn").hidden = true; $("#camBtn").textContent = "Use camera";
+    if (!imgCanvas) $("#dropHint").style.display = "";
+  }
+  $("#snapBtn").addEventListener("click", () => {
+    const v = $("#video");
+    const w = v.videoWidth, h = v.videoHeight;
+    stopCam();
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(v, 0, 0, w, h);
+    setImage(c, w, h, "camera photo");
+  });
+
+  // region selection
+  function pos(e) {
+    const r = overlay.getBoundingClientRect();
+    return [Math.max(0, Math.min(overlay.width, (e.clientX - r.left) * overlay.width / r.width)),
+            Math.max(0, Math.min(overlay.height, (e.clientY - r.top) * overlay.height / r.height))];
+  }
+  overlay.addEventListener("pointerdown", (e) => { drag = { a: pos(e), b: pos(e) }; overlay.setPointerCapture(e.pointerId); });
+  overlay.addEventListener("pointermove", (e) => { if (drag) { drag.b = pos(e); drawOverlay(); } });
+  overlay.addEventListener("pointerup", () => {
+    if (!drag) return;
+    const [x0, y0] = drag.a, [x1, y1] = drag.b;
+    const x = Math.round(Math.min(x0, x1)), y = Math.round(Math.min(y0, y1));
+    const w = Math.round(Math.abs(x1 - x0)), h = Math.round(Math.abs(y1 - y0));
+    drag = null;
+    if (w >= 20 && h >= 20) { region = [x, y, w, h]; $("#resetArea").disabled = false; run("selected area"); }
+    drawOverlay();
+  });
+  $("#resetArea").addEventListener("click", () => { region = null; $("#resetArea").disabled = true; drawOverlay(); run("whole image"); });
+
+  function drawOverlay() {
+    const ctx = overlay.getContext("2d");
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    let r = region;
+    if (drag) { const [x0, y0] = drag.a, [x1, y1] = drag.b; r = [Math.min(x0, x1), Math.min(y0, y1), Math.abs(x1 - x0), Math.abs(y1 - y0)]; }
+    if (!r) return;
+    ctx.fillStyle = "rgba(15,20,25,.45)";
+    ctx.fillRect(0, 0, overlay.width, overlay.height);
+    ctx.clearRect(r[0], r[1], r[2], r[3]);
+    ctx.strokeStyle = "#299bdd"; ctx.lineWidth = 3; ctx.strokeRect(r[0], r[1], r[2], r[3]);
+  }
+
+  // ---------- run ----------
+  let busy = 0;
+  async function run(name) {
+    if (!imgCanvas) return;
+    const mine = ++busy;
+    hideMsg();
+    $("#label").textContent = "Analysing…";
+    let resp;
+    try {
+      resp = API ? await callApi(imgCanvas, region) : await callWorker(imgCanvas, region);
+    } catch (err) {
+      resp = { ok: false, error: "Could not reach the API at " + API + " (" + err.message + "). Is the Django server running?" };
+    }
+    if (mine !== busy) return;
+    if (!resp.ok) { showMsg(resp.error || "The request failed."); $("#label").textContent = "Error"; return; }
+    render(resp, name);
+  }
+
+  function render(resp, name) {
+    const r = resp.result;
+    const size = region ? `${region[2]}×${region[3]} area of ${imgCanvas.width}×${imgCanvas.height}` : `${imgCanvas.width}×${imgCanvas.height}`;
+    const req = API ? `POST ${API}${region ? "?face=0" : ""}\nContent-Type: text/plain\nBody: base64 JPEG, ${resp.bytes.toLocaleString()} characters (${size})`
+                    : `POST /image-process   (in-browser back end, Web Worker)\nBody: ${size} image`;
+    $("#logText").textContent = `${req}\n\n${resp.ms} ms · 200 OK\n${JSON.stringify(r, null, 2)}`;
+
+    const found = r.label !== "No skin detected";
+    $("#label").textContent = r.label;
+    $("#swatch").style.background = found ? r.hex : "";
+    if (found) {
+      $("#meta").innerHTML = `<span>ITA <b>${r.ita.toFixed(1)}°</b> · colour <b>${r.hex}</b></span>
+        <span>CIELAB <b>L* ${r.lab[0]} a* ${r.lab[1]} b* ${r.lab[2]}</b></span>
+        <span>Skin pixels <b>${(r.skin_fraction * 100).toFixed(1)}%</b> of the ${region ? "area" : "image"}${r.face_found ? " (face found)" : ""}</span>`;
+      const m = $("#marker");
+      m.style.display = "";
+      m.style.left = (Math.max(-90, Math.min(90, r.ita)) + 90) / 180 * 100 + "%";
+      $("#formula").innerHTML = `ITA = arctan((L* − 50) / b*)<br>= arctan((${r.lab[0]} − 50) / ${r.lab[2]})<br>= <b>${r.ita.toFixed(1)}°</b> → ${r.label}`;
+    } else {
+      $("#meta").innerHTML = `<span class="empty">Not enough skin-coloured pixels (${(r.skin_fraction * 100).toFixed(1)}% of the ${region ? "area" : "image"}). Try a closer photo in even light, or select the face.</span>`;
+      $("#marker").style.display = "none";
+      $("#formula").textContent = "ITA = arctan((L* − 50) / b*)";
+    }
+    drawSteps(resp.debug, r);
+  }
+
+  function drawSteps(debug, r) {
+    const fit = (cv, w, h) => { const s = Math.min(1, 640 / Math.max(w, h)); cv.width = Math.round(w * s); cv.height = Math.round(h * s); return cv; };
+    // 1 area
+    const a = fit($("#cvArea"), imgCanvas.width, imgCanvas.height), actx = a.getContext("2d");
+    actx.drawImage(imgCanvas, 0, 0, a.width, a.height);
+    if (region) {
+      const s = a.width / imgCanvas.width;
+      actx.fillStyle = "rgba(15,20,25,.5)"; actx.fillRect(0, 0, a.width, a.height);
+      actx.drawImage(imgCanvas, region[0], region[1], region[2], region[3], region[0] * s, region[1] * s, region[2] * s, region[3] * s);
+      actx.strokeStyle = "#299bdd"; actx.lineWidth = 3; actx.strokeRect(region[0] * s, region[1] * s, region[2] * s, region[3] * s);
+    }
+    // 2 mask
+    const mc = $("#cvMask");
+    if (!debug) {
+      const ctx = mc.getContext("2d"); ctx.clearRect(0, 0, mc.width, mc.height);
+      $("#maskText").textContent = "The Django API returns only the result; the mask and clusters are shown when the in-browser back end is used.";
+      $("#clusters").innerHTML = '<p class="empty">Shown in in-browser mode.</p>';
+      return;
+    }
+    const [rx, ry] = region || [0, 0];
+    const w = debug.width, h = debug.height;
+    mc.width = w; mc.height = h;
+    const src = imgCanvas.getContext("2d").getImageData(rx, ry, w, h);
+    const out = mc.getContext("2d").createImageData(w, h);
+    for (let p = 0; p < w * h; p++) {
+      const on = debug.mask[p];
+      for (let c = 0; c < 3; c++) out.data[p * 4 + c] = on ? src.data[p * 4 + c] : Math.round(src.data[p * 4 + c] * 0.12 + [52, 60, 70][c]);
+      out.data[p * 4 + 3] = 255;
+    }
+    mc.getContext("2d").putImageData(out, 0, 0);
+    // 3 clusters
+    if (!debug.clusters) { $("#clusters").innerHTML = '<p class="empty">Not enough skin pixels to cluster.</p>'; return; }
+    const cl = debug.clusters.map((c, i) => ({ ...c, i })).sort((x, y) => y.share - x.share);
+    $("#clusters").innerHTML = cl.map((c) => `<div class="cl${c.chosen ? " chosen" : ""}"><i style="background:rgb(${c.rgb.join(",")})"></i>
+      <div><div class="track"><div style="width:${(c.share * 100).toFixed(1)}%"></div></div><span style="font-size:12px;color:var(--ink-2)">${c.chosen ? "skin colour" : "other colour (shadow, highlight, hair or clothing)"}</span></div>
+      <span class="pct">${Math.round(c.share * 100)}%</span></div>`).join("") +
+      `<p class="empty" style="font-size:12.5px">${debug.sampled.toLocaleString()} skin pixels clustered; result ${r.hex}.</p>`;
+  }
+
+  function showMsg(t) { const m = $("#msg"); m.textContent = t; m.classList.add("on"); }
+  function hideMsg() { $("#msg").classList.remove("on"); }
+
+  // ---------- sample illustrations (drawn, not photos) ----------
+  const SAMPLES = [
+    { skin: "#f3e7db", hair: "#2b2018", bg: ["#9cc7e8", "#d8ecf8"], shirt: "#3a5a8c" },
+    { skin: "#d7bd96", hair: "#151313", bg: ["#c9e3c4", "#eef6ec"], shirt: "#2f5f8c" },
+    { skin: "#b38b5d", hair: "#1a1512", bg: ["#7fc4c0", "#d9efed"], shirt: "#2f4a6b" },
+    { skin: "#604134", hair: "#0f0d0c", bg: ["#b9b4e6", "#e7e5f7"], shirt: "#d9a43a" },
+  ];
+  function drawAvatar(s, size, seed) {
+    const c = document.createElement("canvas"); c.width = c.height = size;
+    const x = c.getContext("2d"), u = size / 100;
+    const g = x.createLinearGradient(0, 0, 0, size); g.addColorStop(0, s.bg[0]); g.addColorStop(1, s.bg[1]);
+    x.fillStyle = g; x.fillRect(0, 0, size, size);
+    x.fillStyle = s.shirt; x.beginPath(); x.ellipse(50 * u, 104 * u, 42 * u, 26 * u, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = s.skin; x.fillRect(42 * u, 62 * u, 16 * u, 18 * u);
+    x.fillStyle = s.hair; x.beginPath(); x.ellipse(50 * u, 40 * u, 27 * u, 30 * u, 0, 0, Math.PI * 2); x.fill();
+    const fg = x.createRadialGradient(44 * u, 42 * u, 4 * u, 50 * u, 48 * u, 28 * u);
+    fg.addColorStop(0, s.skin); fg.addColorStop(0.75, s.skin); fg.addColorStop(1, shade(s.skin, 0.82));
+    x.fillStyle = fg; x.beginPath(); x.ellipse(50 * u, 48 * u, 21 * u, 26 * u, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = s.hair; x.beginPath(); x.ellipse(50 * u, 27 * u, 22 * u, 9 * u, 0, Math.PI, 0); x.fill();
+    x.fillStyle = "#fff"; [[42, 46], [58, 46]].forEach(([ex, ey]) => { x.beginPath(); x.ellipse(ex * u, ey * u, 3.6 * u, 2.2 * u, 0, 0, Math.PI * 2); x.fill(); });
+    x.fillStyle = "#2a1d16"; [[42, 46], [58, 46]].forEach(([ex, ey]) => { x.beginPath(); x.arc(ex * u, ey * u, 1.6 * u, 0, Math.PI * 2); x.fill(); });
+    x.strokeStyle = s.hair; x.lineWidth = 1.6 * u; [[38, 41, 46, 40], [54, 40, 62, 41]].forEach(([a, b, c2, d]) => { x.beginPath(); x.moveTo(a * u, b * u); x.lineTo(c2 * u, d * u); x.stroke(); });
+    x.strokeStyle = "#9c4a4a"; x.lineWidth = 1.8 * u; x.beginPath(); x.arc(50 * u, 58 * u, 6 * u, 0.15 * Math.PI, 0.85 * Math.PI); x.stroke();
+    // light camera noise so it behaves more like a photo
+    const im = x.getImageData(0, 0, size, size); let r = seed * 9301 + 49297;
+    for (let i = 0; i < im.data.length; i += 4) { r = (r * 9301 + 49297) % 233280; const n = (r / 233280 - 0.5) * 10; for (let k = 0; k < 3; k++) im.data[i + k] = Math.max(0, Math.min(255, im.data[i + k] + n)); }
+    x.putImageData(im, 0, 0);
+    return c;
+  }
+  function shade(hex, f) { const n = parseInt(hex.slice(1), 16); return `rgb(${[(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * f)).join(",")})`; }
+  SAMPLES.forEach((s, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", `Illustration ${i + 1}`);
+    b.appendChild(drawAvatar(s, 104, i + 1));
+    b.addEventListener("click", () => { stopCam(); const big = drawAvatar(s, 480, i + 1); setImage(big, 480, 480, `illustration ${i + 1}`); });
+    $("#samples").appendChild(b);
+  });
+})();
+</script>
+</body>
+</html>
