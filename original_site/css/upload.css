@@ -70,6 +70,26 @@ body {
   background-color: var(--clr-bright-blue);
   box-shadow: 0px 0px 5px 0px #617d9b;
 }
+.drag-area .btn-camera {
+  margin-left: 1rem;
+}
+.drag-area [hidden] {
+  display: none !important;
+}
+.camera video {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 5px;
+  border: 1px solid #617d9b;
+  transform: scaleX(-1); /* mirror preview, like a selfie camera */
+}
+.camera-buttons .btn-upload {
+  margin-inline: 0.5rem;
+}
+.drag-area .btn-cancel {
+  background-color: #617d9b;
+  color: white;
+}
 /* Result Section */
 .result-container {
   width: 85%;

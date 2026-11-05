@@ -35,7 +35,7 @@ upload / drag and drop / camera  ──►  POST /image-process  ──►  skin
 
 ### Front end
 
-[`original_site/`](original_site/) is the ToneScan website: home page, upload page with drag and drop, contact section and sign-in/sign-up screens. The upload page reads the photo, sends it as base64 to `POST /image-process` and shows the returned label and colour.
+[`original_site/`](original_site/) is the ToneScan website: home page, upload page with drag and drop, contact section and sign-in/sign-up screens. The upload page takes a photo by drag and drop, file browser or the device camera (*Take Photo*), sends it as base64 to `POST /image-process` and shows the returned label and colour.
 
 ![Upload page with a result](images/upload_result.png)
 
@@ -92,7 +92,7 @@ node tests/test_parity.mjs                   # Python vs JavaScript
 
 ## Skills
 
-HTML, CSS and JavaScript (drag and drop, FileReader, Canvas, Web Workers) · Python (OpenCV, NumPy, scikit-learn) · image processing (colour spaces, thresholding, morphology, Haar cascade face detection) · k-means clustering · colour science (CIELAB, ITA) · Django and Django REST Framework · pytest · GitHub Actions
+HTML, CSS and JavaScript (drag and drop, FileReader, camera capture with getUserMedia, Canvas, Web Workers) · Python (OpenCV, NumPy, scikit-learn) · image processing (colour spaces, thresholding, morphology, Haar cascade face detection) · k-means clustering · colour science (CIELAB, ITA) · Django and Django REST Framework · pytest · GitHub Actions
 
 ## Repository structure
 

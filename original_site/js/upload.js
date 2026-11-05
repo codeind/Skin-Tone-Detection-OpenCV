@@ -50,9 +50,11 @@ function clearGarbage() {
 
 //Block of code to set the file reading process: parse loaded image into base64 encoding and send that data to API
 let fileReader = new FileReader();
-fileReader.onload = () => {
+fileReader.onload = () => showAndSend(fileReader.result);
+
+//Show the image on the page and send it to the API (used by file upload and the camera)
+function showAndSend(fileURL) {
   //Get the base64 Data from the image
-  let fileURL = fileReader.result;
   baseURL = fileURL.split(",")[1];
   
   //Sending it to the API
@@ -61,7 +63,8 @@ fileReader.onload = () => {
   //loading the image on the page
   let imgTag = `<img src="${fileURL}" alt="" id="uploadImage" >`;
   imgHolder.innerHTML = imgTag;
-};
+  document.querySelector("#resultContainer").scrollIntoView({ behavior: "smooth" });
+}
 
 //setResult:  This function will take values from the response and necessary elements will be altered.
 const setResult = function (data) {
@@ -119,19 +122,60 @@ dragArea.addEventListener("drop", (e) => {
 });
 //Upload button functionality
 
-upButton.onclick = () => {
-  input.click();
-  input.addEventListener("change", function () {
-    clearGarbage();
-    file = this.files[0];
-    
-    if (file) {
-      if (validExtensions.includes(file.type)) {
-        try {
-          fileReader.readAsDataURL(file);
-        } catch (err) {
-        }
+upButton.onclick = () => input.click();
+input.addEventListener("change", function () {
+  clearGarbage();
+  file = this.files[0];
+
+  if (file) {
+    if (validExtensions.includes(file.type)) {
+      try {
+        fileReader.readAsDataURL(file);
+      } catch (err) {
       }
     }
-  });
-};
+  }
+});
+
+/* Take Photo: open the camera, capture a frame and analyse it like an uploaded file */
+const cameraBtn = document.querySelector(".btn-camera");
+const cameraBox = document.querySelector(".camera");
+const video = cameraBox.querySelector("video");
+const dragPrompt = [dragText, dragArea.querySelector("p"), upButton, cameraBtn];
+let stream = null;
+
+function closeCamera() {
+  if (stream) stream.getTracks().forEach((t) => t.stop());
+  stream = null;
+  cameraBox.hidden = true;
+  dragPrompt.forEach((el) => (el.hidden = false));
+}
+
+cameraBtn.addEventListener("click", async () => {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    dragText.textContent = "This browser can't open the camera. Use Browse File instead.";
+    return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+    video.srcObject = stream;
+    await video.play();
+    dragPrompt.forEach((el) => (el.hidden = true));
+    cameraBox.hidden = false;
+  } catch (err) {
+    dragText.textContent = "Camera not available: allow camera access or use Browse File.";
+    closeCamera();
+  }
+});
+
+document.querySelector("#captureBtn").addEventListener("click", () => {
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+  closeCamera();
+  clearGarbage();
+  showAndSend(canvas.toDataURL("image/jpeg", 0.92));
+});
+
+document.querySelector("#cancelCamera").addEventListener("click", closeCamera);

@@ -41,7 +41,16 @@
         <h1 class="header">Drag and drop file to upload</h1>
         <p>OR</p>
         <button class="btn-upload">Browse File</button>
-        <input type="file" hidden />
+        <button class="btn-upload btn-camera" type="button">Take Photo</button>
+        <input type="file" accept="image/jpeg,image/png" hidden />
+        <!-- Camera view, shown after "Take Photo" -->
+        <div class="camera" hidden>
+          <video playsinline muted></video>
+          <div class="camera-buttons">
+            <button class="btn-upload" type="button" id="captureBtn">Capture</button>
+            <button class="btn-upload btn-cancel" type="button" id="cancelCamera">Cancel</button>
+          </div>
+        </div>
       </div>
     </div>
     <!--Result-->
