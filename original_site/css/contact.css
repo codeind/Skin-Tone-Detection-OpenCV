@@ -83,6 +83,7 @@
   .containr .row{
     display: flex;
     flex-direction: row;
+    justify-content: center;
     margin-top: 50px;
   }
   .containr .row .map{
@@ -95,7 +96,8 @@
     width: 50%;
     margin-top: 6px;
     padding: 20px;
-    margin-left: 100px;
+    margin-left: 0;
+    max-width: 640px;
   }
   
   /* Clear floats after the columns */
@@ -121,6 +123,7 @@
       }
       .containr .row .column{
         margin: auto;
+        width: 100%;
       }
     }
   
